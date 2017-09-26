@@ -1,0 +1,8 @@
+[user]
+	email = pylrichard@qq.com
+	name = pylrichard
+[credential]
+    # 需要git 2.x版本才支持
+	helper = cache --timeout=36000
+[push]
+	default = simple

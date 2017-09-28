@@ -126,6 +126,7 @@ function setup_vim_runtime {
     sh $home_dir/.vim_runtime/install_awesome_vimrc.sh
     #cp ./vim/vimrcs/basic.vim $home_dir/.vim_runtime/vimrcs/
     sudo cp -ra $home_dir/.vim_runtime /root
+    sudo chown -R root:root /root/.vim_runtime
     cd $config_dir
 }
 
@@ -149,6 +150,7 @@ function setup_autojump {
     ./install.py
     sudo ln -s ~/.autojump/bin/autojump /usr/local/bin/autojump
     sudo cp -ra ~/.autojump /root
+    sudo chown -R root:root /root/.autojump
     cd $config_dir
 }
 

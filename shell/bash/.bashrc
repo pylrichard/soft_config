@@ -13,13 +13,14 @@ export MYSQL_56_HOME=/usr/local/mysql/mysql_56
 export HIVE_HOME=/usr/local/hive/hive
 export M2_HOME=/usr/local/maven/maven
 export ES_HOME=/usr/local/elasticsearch/elasticsearch
+export KIBANA_HOME=/usr/local/kibana/kibana
 export GRADLE_HOME=/usr/local/gradle/gradle
 export NODE_HOME=/usr/local/node/node
 export ACTIVEMQ_HOME=/usr/local/activemq/activemq
 export ZOOKEEPER_HOME=/usr/local/zookeeper/zookeeper
 export CLASS_PATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$HIVE_HOME/lib
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
-export PATH=$JAVA_HOME/bin:$MYSQL_57_HOME/bin:$MYSQL_56_HOME/bin:$M2_HOME/bin:$GRADLE_HOME/bin:$NODE_HOME/bin:$SPARK_HOME/sbin:$SCALA_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$ZOOKEEPER_HOME/bin:$ACTIVEMQ_HOME/bin:$ES_HOME/bin:$PATH
+export PATH=$JAVA_HOME/bin:$MYSQL_57_HOME/bin:$MYSQL_56_HOME/bin:$M2_HOME/bin:$GRADLE_HOME/bin:$NODE_HOME/bin:$SPARK_HOME/sbin:$SCALA_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$ZOOKEEPER_HOME/bin:$ACTIVEMQ_HOME/bin:$ES_HOME/bin:$KIBANA_HOME/bin:$PATH
 
 alias cls='clear'
 alias ll='ls -lsh'

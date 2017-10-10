@@ -4,7 +4,6 @@ home_dir=/home/pylrichard
 workspace_dir=$home_dir/Workspace
 config_dir=$workspace_dir/soft_config
 ide_dir=/usr/local/ide
-src_dir=$home_dir/soft
 idea_dir=$workspace_dir/idea_project
 pycharm_dir=$workspace_dir/pycharm_project
 
@@ -37,11 +36,13 @@ function is_ubuntu {
 
 if is_centos
 then
-    pkg_dir=$home_dir/soft
+    src_dir=$home_dir/soft
+    pkg_dir=$src_dir
 fi
 
 if is_ubuntu
 then
+    src_dir=$home_dir/Soft
     pkg_dir=/mnt/hgfs/soft
 fi
 
@@ -66,7 +67,7 @@ function create_dir {
 }
 
 function rm_src_dir {
-    rm -rf $src_dir
+    sudo rm -rf $src_dir
 }
 
 function configure_user {
@@ -203,8 +204,8 @@ function setup_ide {
     cp ./ide/*.desktop ~/Desktop
 }
 
-function setup_db {
-    echo -e "\nsetup db\n"
+function setup_mysql {
+    echo -e "\nsetup mysql\n"
 
     if [ ! -d $workspace_dir/db_study ]
     then
@@ -214,8 +215,20 @@ function setup_db {
     cd $workspace_dir/db_study/mysql/script
     #切换到root，-s执行1个shell脚本
     #-c执行1条命令
-    su root -s /bin/bash ./5.7_install.sh /mnt/hgfs/soft/mysql/mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz single 1
+    su root -s /bin/bash ./5.7_install.sh $pkg_dir/mysql/mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz single 1
     sudo systemctl start mysql.server.service
+}
+
+function setup_redis {
+    echo -e "\nsetup redis\n"
+
+    tar zxf $pkg_dir/redis-4.0.1.tar.gz -C $src_dir
+    cd $src_dir/redis-4.0.1
+    sudo make -j 4
+    sudo make test
+    sudo make install
+    sudo cp $workspace_dir/db_study/redis/script/redis.conf /etc/redis
+    redis-server /etc/redis/redis.conf
 }
 
 function setup_bd {
@@ -287,7 +300,8 @@ function setup_ubuntu {
     setup_git_recall
     setup_ide
     setup_python
-    setup_db
+    setup_mysql
+    setup_redis
     
     sudo apt-get clean
 }
@@ -350,8 +364,8 @@ case "$1" in
     'cp_mvn_config' )
         cp_mvn_config
         ;;
-    'setup_zsh' )
-        setup_zsh
+    'setup_redis' )
+        setup_redis
         ;;
     'rm_src_dir' )
         rm_src_dir

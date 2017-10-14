@@ -140,6 +140,14 @@ function setup_git_recall {
     cd $config_dir
 }
 
+function setup_cloc {
+    echo -e "\nsetup cloc\n"
+
+    tar zxf $pkg_dir/cloc-1.74.tar.gz -C $src_dir
+    cd $src_dir/cloc-1.74
+    sudo cp cloc /usr/local/bin
+}
+
 function setup_autojump {
     echo -e "\nsetup autojump\n"
 
@@ -202,6 +210,12 @@ function setup_ide {
     cd $config_dir
     #添加图标到桌面
     cp ./ide/*.desktop ~/Desktop
+}
+
+function setup_maven {
+    sudo mkdir /usr/local/maven
+    sudo tar zxf $pkg_dir/apache-maven-3.3.9-bin.tar.gz -C /usr/local/maven
+    sudo ln -s /usr/local/maven/apache-maven-3.3.9 /usr/local/maven/maven
 }
 
 function setup_mysql {
@@ -268,7 +282,7 @@ function cp_shell_config {
     cp ./shell/zsh/.zshrc ~
 }
 
-function cp_mvn_config {
+function cp_maven_config {
     if test -d $home_dir/.m2
     then
         cd $config_dir
@@ -361,11 +375,11 @@ case "$1" in
     'checkout_git_repo' )
         checkout_git_repo
         ;;
-    'cp_mvn_config' )
-        cp_mvn_config
+    'cp_maven_config' )
+        cp_maven_config
         ;;
-    'setup_redis' )
-        setup_redis
+    'setup_cloc' )
+        setup_cloc
         ;;
     'rm_src_dir' )
         rm_src_dir
@@ -374,6 +388,6 @@ case "$1" in
     	setup
         ;;
     * )
-        echo "Usage: $0 {setup | cp_mvn_config | rm_src_dir}" >&2
+        echo "Usage: $0 {setup | cp_maven_config | rm_src_dir}" >&2
         ;;
 esac

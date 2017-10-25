@@ -1,12 +1,22 @@
 #!/bin/bash
 
 home_dir=/home/pylrichard
-workspace_dir=$home_dir/Workspace
+if is_centos
+then
+    workspace_dir=$home_dir/workspace
+    src_dir=$home_dir/soft
+    pkg_dir=$src_dir
+fi
+if is_ubuntu
+then
+    workspace_dir=$home_dir/Workspace
+    src_dir=$home_dir/Soft
+    pkg_dir=/mnt/hgfs/soft
+fi
 config_dir=$workspace_dir/soft_config
 ide_dir=/usr/local/ide
 idea_dir=$workspace_dir/idea_project
 pycharm_dir=$workspace_dir/pycharm_project
-
 soft_list="tree sysstat iotop ntp"
 download_tool=wget
 #并行下载参数，注意空格
@@ -33,18 +43,6 @@ function is_ubuntu {
         return 1
     fi
 }
-
-if is_centos
-then
-    src_dir=$home_dir/soft
-    pkg_dir=$src_dir
-fi
-
-if is_ubuntu
-then
-    src_dir=$home_dir/Soft
-    pkg_dir=/mnt/hgfs/soft
-fi
 
 function create_dir {
     if is_ubuntu
@@ -343,16 +341,18 @@ function setup_centos {
 
 function setup {
     cd ~
-    mkdir Workspace
-    cd Workspace
 
     if is_centos
     then
+        mkdir workspace
+        cd workspace
         sudo yum -y install git $download_tool
     fi
 
     if is_ubuntu
     then
+        mkdir Workspace
+        cd Workspace
         sudo apt-get update
         sudo apt-get -y install git $download_tool
     fi

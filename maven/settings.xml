@@ -33,7 +33,7 @@
    | Default: ${user.home}/.m2/repository
   <localRepository>/path/to/local/repo</localRepository>
   -->
-  <localRepository>/home/pylrichard/.m2/repository</localRepository>
+  <localRepository>C:\Users\pylrichard\.m2\repository</localRepository>
 
   <!-- interactiveMode
    | This will determine whether maven prompts you when it needs input. If set to false,

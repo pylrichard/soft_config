@@ -1,22 +1,10 @@
 #!/bin/bash
 
-home_dir=/home/pylrichard
-if is_centos
-then
-    workspace_dir=$home_dir/workspace
-    src_dir=$home_dir/soft
-    pkg_dir=$src_dir
-fi
-if is_ubuntu
-then
-    workspace_dir=$home_dir/Workspace
-    src_dir=$home_dir/Soft
-    pkg_dir=/mnt/hgfs/soft
-fi
+home_dir=/root
+workspace_dir=$home_dir/workspace
+src_dir=$home_dir/soft
+pkg_dir=$src_dir
 config_dir=$workspace_dir/soft_config
-ide_dir=/usr/local/ide
-idea_dir=$workspace_dir/idea_project
-pycharm_dir=$workspace_dir/pycharm_project
 soft_list="tree sysstat iotop ntp"
 download_tool=wget
 #并行下载参数，注意空格
@@ -45,19 +33,6 @@ function is_ubuntu {
 }
 
 function create_dir {
-    if is_ubuntu
-    then
-        if [ ! -d $idea_dir ]
-        then
-            mkdir -p $idea_dir
-        fi
-
-        if [ ! -d $pycharm_dir ]
-        then
-            mkdir -p $pycharm_dir
-        fi
-    fi
-
     if [ ! -d $src_dir ]
     then
         mkdir $src_dir
@@ -124,8 +99,8 @@ function setup_vim_runtime {
     tar jxf vim_runtime.tar.bz2 -C ~
     sh $home_dir/.vim_runtime/install_awesome_vimrc.sh
     #cp ./vim/vimrcs/basic.vim $home_dir/.vim_runtime/vimrcs/
-    sudo cp -ra $home_dir/.vim_runtime /root
-    sudo chown -R root:root /root/.vim_runtime
+    #sudo cp -ra $home_dir/.vim_runtime /root
+    #sudo chown -R root:root /root/.vim_runtime
     cd $config_dir
 }
 
@@ -156,8 +131,8 @@ function setup_autojump {
     cd $src_dir/autojump
     ./install.py
     sudo ln -s ~/.autojump/bin/autojump /usr/local/bin/autojump
-    sudo cp -ra ~/.autojump /root
-    sudo chown -R root:root /root/.autojump
+    #sudo cp -ra ~/.autojump /root
+    #sudo chown -R root:root /root/.autojump
     cd $config_dir
 }
 
@@ -195,21 +170,6 @@ function setup_python {
     done
 }
 
-function setup_ide {
-    echo -e "\nsetup ide\n"
-
-    #解压配置文件
-    tar jxvf $pkg_dir/ide/idea_settings.tar.bz2 -C $home_dir
-    tar jxvf $pkg_dir/ide/pycharm_settings.tar.bz2 -C $home_dir
-    #解压安装包
-    sudo mkdir -p $ide_dir
-    sudo tar jxvf $pkg_dir/ide/idea.tar.bz2 -C $ide_dir
-    sudo tar jxvf $pkg_dir/ide/pycharm.tar.bz2 -C $ide_dir
-    cd $config_dir
-    #添加图标到桌面
-    cp ./ide/*.desktop ~/Desktop
-}
-
 function setup_maven {
     sudo mkdir /usr/local/maven
     sudo tar zxf $pkg_dir/apache-maven-3.3.9-bin.tar.gz -C /usr/local/maven
@@ -243,23 +203,8 @@ function setup_redis {
     redis-server /etc/redis/redis.conf
 }
 
-function setup_bd {
-    echo -e "\nsetup bd\n"
-
-    if [ ! -d $idea_dir/big_data_study ]
-    then
-        git clone https://github.com/pylrichard/big_data_study.git $idea_dir/big_data_study
-    fi
-
-    cd $idea_dir/big_data_study
-}
-
-function checkout_git_repo {
-    echo -e "\ncheckout git repo\n"
-
-    git clone https://github.com/pylrichard/java_study.git $idea_dir/java_study
-    git clone https://github.com/pylrichard/python_study.git $pycharm_dir/python_study
-    git clone https://github.com/pylrichard/linux_study.git $workspace_dir/linux_study
+function setup_bigdata {
+    echo -e "\nsetup bigdata\n"
 }
 
 function cp_git_config {
@@ -267,17 +212,16 @@ function cp_git_config {
 
     cd $config_dir
     cp ./git/.gitconfig $home_dir
-    sudo cp ./git/.gitconfig /root
+    #sudo cp ./git/.gitconfig /root
 }
 
 function cp_shell_config {
     echo -e "\ncp shell config\n"
 
     cd $config_dir
-    cp ./shell/bash/.bash* ./shell/bash/.inputrc ~
-    sudo cp ./shell/bash/.bash* ./shell/bash/.inputrc /root
+    sudo cp ./shell/bash/.bash* ./shell/bash/.inputrc ~
 
-    cp ./shell/zsh/.zshrc ~
+    #cp ./shell/zsh/.zshrc ~
 }
 
 function cp_maven_config {
@@ -289,14 +233,12 @@ function cp_maven_config {
 }
 
 function setup_soft {
-    if is_ubuntu
-    then
-        setup_zsh
-    fi
+    #setup_zsh
     cp_shell_config
     cp_git_config
     setup_vim_runtime
     setup_autojump
+    setup_cloc
     setup_java
 }
 
@@ -307,13 +249,6 @@ function setup_ubuntu {
     #sudo cp ./apt/sources.list /etc/apt
     #sudo apt-get update
     sudo apt-get -y install $soft_list autoconf ncurses-dev tmux tcl libmysqlclient-dev python2.7-dev
-    
-    setup_soft
-    setup_git_recall
-    setup_ide
-    setup_python
-    setup_mysql
-    setup_redis
     
     sudo apt-get clean
 }
@@ -334,6 +269,10 @@ function setup_centos {
     sudo yum -y groupinstall "Development Tools"
     
     setup_soft
+    #setup_git_recall
+    #setup_python
+    #setup_mysql
+    #setup_redis
 
     #清除缓存目录(/var/cache/yum)下的软件包及旧的headers
     sudo yum clean all
@@ -341,24 +280,22 @@ function setup_centos {
 
 function setup {
     cd ~
+    mkdir workspace
+    #cd workspace
 
     if is_centos
     then
-        mkdir workspace
-        cd workspace
         sudo yum -y install git $download_tool
     fi
 
     if is_ubuntu
     then
-        mkdir Workspace
-        cd Workspace
         sudo apt-get update
         sudo apt-get -y install git $download_tool
     fi
 
-    git clone https://github.com/pylrichard/soft_config.git
-    cd soft_config
+    #git clone https://github.com/pylrichard/soft_config.git
+    cd ~/soft_config
 
     if is_centos
     then
@@ -372,12 +309,6 @@ function setup {
 }
 
 case "$1" in
-    'checkout_git_repo' )
-        checkout_git_repo
-        ;;
-    'cp_maven_config' )
-        cp_maven_config
-        ;;
     'setup_cloc' )
         setup_cloc
         ;;
@@ -388,6 +319,6 @@ case "$1" in
     	setup
         ;;
     * )
-        echo "Usage: $0 {setup | cp_maven_config | rm_src_dir}" >&2
+        echo "Usage: $0 {setup | rm_src_dir}" >&2
         ;;
 esac

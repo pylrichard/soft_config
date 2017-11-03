@@ -185,10 +185,24 @@ function setup_mysql {
     fi
 
     cd $workspace_dir/db_study/mysql/script
+    
+    if is_centos
+    then
+        rpm -e --allmatches --nodeps mariadb-devel-5.5.56-2.el7.x86_64
+        rpm -e --allmatches --nodeps mariadb-libs-5.5.56-2.el7.x86_64
+    fi
+
     #切换到root，-s执行1个shell脚本
     #-c执行1条命令
     su root -s /bin/bash ./5.7_install.sh $pkg_dir/mysql/mysql-5.7.18-linux-glibc2.5-x86_64.tar.gz single 1
-    sudo systemctl start mysql.server.service
+    if is_ubuntu
+    then
+        sudo systemctl start mysql.server.service
+    fi
+    if is_centos
+    then
+        sudo systemctl enable mysql.server.service
+    fi
 }
 
 function setup_redis {
@@ -248,7 +262,7 @@ function setup_ubuntu {
     
     #sudo cp ./apt/sources.list /etc/apt
     #sudo apt-get update
-    sudo apt-get -y install $soft_list autoconf ncurses-dev tmux tcl libmysqlclient-dev python2.7-dev
+    sudo apt-get -y install $soft_list autoconf ncurses-dev tmux tcl libmysqlclient-dev python2.7-dev libaio1
     
     sudo apt-get clean
 }
@@ -265,7 +279,7 @@ function setup_centos {
     sudo yum makecache
     #net-tools.x86_64是为了安装ifconfig
     #ncurses-devel.x86_64是为了安装zsh
-    sudo yum -y install $soft_list vim mysql-devel net-tools.x86_64 ncurses-devel.x86_64
+    sudo yum -y install $soft_list vim mysql-devel net-tools.x86_64 ncurses-devel.x86_64 libaio.x86_64
     sudo yum -y groupinstall "Development Tools"
     
     setup_soft
@@ -281,7 +295,7 @@ function setup_centos {
 function setup {
     cd ~
     mkdir workspace
-    #cd workspace
+    cd workspace
 
     if is_centos
     then
@@ -294,8 +308,8 @@ function setup {
         sudo apt-get -y install git $download_tool
     fi
 
-    #git clone https://github.com/pylrichard/soft_config.git
-    cd ~/soft_config
+    git clone https://github.com/pylrichard/soft_config.git
+    cd soft_config
 
     if is_centos
     then
